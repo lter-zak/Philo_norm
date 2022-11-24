@@ -8,13 +8,13 @@ void	*ft_thread_hendler(void *ph)
 	philo = (t_philo *)ph;
 	philo->fix_time = ft_time();
 	if (philo->id % 2==0)
-		go_to_eat(philo);
-	else
-	{
 		ft_usleep(philo->time_to_eat);
+	while(1)
+	{
 		go_to_eat(philo);
+		go_to_sleep(philo);
+		ft_printf("is thinking", philo);
 	}
-	return (0);
 }
 
 int	create_philo(t_philo_gen	*philo_gen)
@@ -45,11 +45,11 @@ int	init_philo(t_philo_gen *philo_gen)
 	while (index < philo_gen->num_of_philo)
 	{
 		philo_gen->philo[index].id = index;
-		philo_gen->philo[index].right_fork = &philo_gen->forks_gen[(index + 1) % philo_gen->num_of_philo];
-		philo_gen->philo[index].left_fork = &philo_gen->forks_gen[index];
+		philo_gen->philo[index].right_fork = (index + 1) % philo_gen->num_of_philo;
+		philo_gen->philo[index].left_fork = index;
+		philo_gen->philo[index].philo_forks = philo_gen->forks_gen;
 		philo_gen->philo[index].time_to_eat = philo_gen->time_to_eat;
 		philo_gen->philo[index].time_to_sleep = philo_gen->time_to_sleep;
-		philo_gen->philo[index].philo_gen = philo_gen;
 		philo_gen->philo[index].write = philo_gen->write;
 		philo_gen->philo[index].fix_time = ft_time();
 		philo_gen->philo[index].start_time = ft_time();
@@ -75,5 +75,16 @@ int	create_mutex(t_philo_gen	*philo_gen)
 			return (1);
 		index++;
 	}
+	return (0);
+}
+
+int	init_all(t_philo_gen *philo_gen)
+{
+	if (create_mutex(philo_gen))
+		return (1);
+	if (init_philo(philo_gen))
+		return (1);
+	if (create_philo(philo_gen))
+		return (1);
 	return (0);
 }

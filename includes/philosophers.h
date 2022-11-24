@@ -22,9 +22,8 @@ struct s_philo
 	long long		start_time;
 	pthread_mutex_t	*write;
 	pthread_mutex_t	*philo_forks;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	t_philo_gen		*philo_gen;
+	int 			left_fork;
+	int 			right_fork;
 };
 
 struct s_philo_gen
